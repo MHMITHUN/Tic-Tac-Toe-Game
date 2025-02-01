@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- DaisyUI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css">
+</head>
+<body class="bg-base-100 min-h-screen flex items-center justify-center">
+    <div class="flex flex-col items-center gap-8">
+        <h1 class="text-4xl font-bold text-center">Tic Tac Toe</h1>
+        
+        <div class="bg-base-200 p-8 rounded-xl shadow-xl">
+            <div id="game-board" class="grid grid-cols-3 grid-rows-3 gap-4 w-96 h-96"></div>
+            
+            <!-- Status Message -->
+            <div class="text-center mt-6">
+                <p id="status-message" class="text-xl font-bold text-center"></p>
+            </div>
+            
+            <!-- Reset Button -->
+            <button onclick="resetGame()" class="btn btn-secondary hover:bg-secondary" 
+                    data-id="reset-button">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '',
+                        '', '', '', '',
+                        '', '', '', '',
+                        '', '', '', ''];
+        let gameActive = true;
+
+        const cells = document.querySelectorAll('[id^="cell"]');
+        const statusMessage = document.getElementById('status-message');
+        const resetButton = document.querySelector('[data-id="reset-button"]');
+        
+        // Debug log
+        console.log('Number of cells:', cells.length);
+        console.log(cells[0].id);
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick, { preventDefault: true });
+        });
+
+        function handleCellClick(e) {
+            // Log when a cell is clicked
+            console.log(`Clicked cell with ID ${e.target.id}`);
+            
+            const cell = e.target;
+            const cellIndex = parseInt(cell.id.substring(4));
+
+            if (gameBoard[cellIndex] !== '' || !gameActive) return;
+
+            gameBoard[cellIndex] = currentPlayer;
+            cell.textContent = currentPlayer;
+            
+            if (checkWin()) {
+                statusMessage.textContent = `Player ${currentPlayer} wins!`;
+                gameActive = false;
+            } else if (checkDraw()) {
+                statusMessage.textContent = "It's a draw!";
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                statusMessage.textContent = `Player ${currentPlayer}'s turn`;
+            }
+        }
+
+        function checkWin() {
+            const winningCombos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
+            ];
+
+            return winningCombos.some(combo => {
+                if (gameBoard[combo[0]] === gameBoard[combo[1]] && 
+                    gameBoard[combo[0]] === gameBoard[combo[2]]) {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        function checkDraw() {
+            return gameBoard.every(cell => cell !== '');
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameBoard = ['', '', '', '',
+                          '', '', '', '',
+                          '', '', '', '',
+                          '', '', '', ''];
+            gameActive = true;
+            statusMessage.textContent = `Player ${currentPlayer}'s turn`;
+            cells.forEach(cell => cell.textContent = '');
+        }
+    </script>
+</body>
+</html>
