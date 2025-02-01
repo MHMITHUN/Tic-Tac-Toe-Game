@@ -82,4 +82,4 @@ For any issues or suggestions, feel free to [open an issue](https://github.com/y
 ---
 
 <p align="center">
-	Made with ❤️ by [Md Mahamudul Hasan]
+	Made with ❤️ by Md.Mahamudul Hasan
